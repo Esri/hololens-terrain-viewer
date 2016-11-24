@@ -1,3 +1,3 @@
 # HoloLens Terrain Sample
 
-![](./holomap.jpg)
+![](./holomap.JPG)
