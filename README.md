@@ -1,1 +1,3 @@
-# Esri-HoloLens-Terrain-Sample
+# HoloLens Terrain Sample
+
+![](./holomap.jpg)
