@@ -15,12 +15,12 @@
 */
 
 namespace Esri.PrototypeLab.HoloLens.Unity {
-    public class ElevationData {
-        public int Columns { get; set; }
-        public int Rows { get; set; }
-        public float Min { get; set; }
-        public float Max { get; set; }
-        public float[] Heights { get; set; }
-        public Tile Tile { get; set; }
+    public class Address {
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string Region { get; set; }
+        public string Postal { get; set; }
+        public string Country { get; set; }
+        public string SingleLine { get; set; }
     }
 }

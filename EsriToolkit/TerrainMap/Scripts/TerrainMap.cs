@@ -18,8 +18,10 @@ using Esri.PrototypeLab.HoloLens.Unity;
 using HoloToolkit.Unity;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.VR.WSA.Input;
 using UnityEngine.Windows.Speech;
 
@@ -34,12 +36,16 @@ namespace Esri.PrototypeLab.HoloLens.Demo {
         private GestureRecognizer _gestureRecognizer = null;
         private KeywordRecognizer _keywordRecognizer = null;
         private bool _isMoving = true;
+        private Place _place = null;
 
         private const float HIT_OFFSET = 0.01f;
         private const float HOVER_OFFSET = 2f;
-        private const float SIZE = 1f;
-        private const float HEIGHT = 0.3f; // 0.25f;
+        private const float SIZE = 0.5f;
+        private const float HEIGHT = 1f;
         private const string SPEECH_PREFIX = "show";
+        private const float TERRAIN_BASE_HEIGHT = 0.02f;
+        private const float VERTICAL_EXAGGERATION = 1.5f;
+        private const int CHILDREN_LEVEL = 2; // 1 = Four child image tiles, 2 = Sixteen child images.
 
         public void Start() {
             // Listen for tap gesture.
@@ -74,6 +80,17 @@ namespace Esri.PrototypeLab.HoloLens.Demo {
                                     terrain.gameObject.layer = 0;
                                 }
                             }
+                        } else {
+                            // If single tap on stationary terrain then perform reverse geocode.
+                            // Exit if nothing found
+                            if (!GazeManager.Instance.Hit) { return; }
+                            if (GazeManager.Instance.FocusedObject == null) { return; }
+
+                            // Exit if not terrain
+                            if (GazeManager.Instance.FocusedObject.GetComponent<Terrain>() == null) { return; }
+
+                            // Get location
+                            this.StartCoroutine(this.AddStreetAddress(GazeManager.Instance.Position));
                         }
                         break;
                     case 2:
@@ -151,11 +168,14 @@ namespace Esri.PrototypeLab.HoloLens.Demo {
                 new Color32(255, 0, 0, 100);
         }
         private IEnumerator AddTerrain(Place place) {
+            // Store current place
+            this._place = place;
+
             // Convert lat/long to Google/Bing/AGOL tile.
-            var tile = place.Location.ToTile(place.Level);
+            var tile = this._place.Location.ToTile(this._place.Level);
 
             // Get children.
-            var children = tile.GetChildren(1);
+            var children = tile.GetChildren(CHILDREN_LEVEL);
 
             // Elevation and texture variables.
             ElevationData el = null;
@@ -181,7 +201,6 @@ namespace Esri.PrototypeLab.HoloLens.Demo {
                         this.StartCoroutine(this.BuildTerrain(el, textures));
                     }
                 }));
-                yield return null;
             }
         }
         private IEnumerator BuildTerrain(ElevationData elevation, Texture2D[] textures) {
@@ -215,19 +234,24 @@ namespace Esri.PrototypeLab.HoloLens.Demo {
             var dimension = (int)Math.Sqrt(textures.Length);
 
             // Splat maps.
-            var splats = textures.Select(t => {
-                return new SplatPrototype() {
+            var splats = new List<SplatPrototype>();
+            foreach (var texture in textures) {
+                splats.Add(new SplatPrototype() {
                     tileOffset = new Vector2(0, 0),
                     tileSize = new Vector2(
                         SIZE / dimension,
                         SIZE / dimension
                     ),
-                    texture = t
-                };
-            });
+                    texture = texture
+                });
+                yield return null;
+            }
             terrainData.splatPrototypes = splats.ToArray();
             terrainData.RefreshPrototypes();
             yield return null;
+
+            // Get tile
+            var tile = this._place.Location.ToTile(this._place.Level);
 
             // Construct height map.
             float[,] data = new float[
@@ -236,14 +260,28 @@ namespace Esri.PrototypeLab.HoloLens.Demo {
             ];
             for (int x = 0; x < terrainData.heightmapWidth; x++) {
                 for (int y = 0; y < terrainData.heightmapHeight; y++) {
+                    // Scale elevation from 257x257 to 33x33
                     var x2 = Convert.ToInt32((double)x * 256 / (terrainData.heightmapWidth - 1));
                     var y2 = Convert.ToInt32((double)y * 256 / (terrainData.heightmapHeight - 1));
+
+                    // Find index in Esri elevation array
                     var id = y2 * 257 + x2;
+
+                    // Absolute height in map units.
                     var h1 = elevation.Heights[id];
-                    var h2 = HEIGHT * Convert.ToSingle(h1 - elevation.Min) / Convert.ToSingle(elevation.Max - elevation.Min);
-                    data[32 - y, x] = h2;
+
+                    // Height in model units.                        
+                    var h2 = SIZE * (h1 - elevation.Min) / tile.Size;
+
+                    // Apply exaggeration.
+                    var h3 = h2 * VERTICAL_EXAGGERATION;
+
+                    // Apply base offset.                  
+                    var h4 = h3 + TERRAIN_BASE_HEIGHT;
+
+                    // Final height.                   
+                    data[terrainData.heightmapHeight - 1 - y, x] = h4;                                      
                 }
-                yield return null;
             }
             terrainData.SetHeights(0, 0, data);
             yield return null;
@@ -277,7 +315,152 @@ namespace Esri.PrototypeLab.HoloLens.Demo {
             // Add terrain component.
             Terrain terrain = terrainObject.AddComponent<Terrain>();
             terrain.terrainData = terrainData;
-            //terrain.Flush();
+            yield return null;
+
+            // Calculate mesh vertices and triangles.
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> triangles = new List<int>();
+
+            // Distance between vertices
+            var step = SIZE / 32f;
+
+            // Front 
+            for (int x = 0; x < terrainData.heightmapWidth; x++) {
+                vertices.Add(new Vector3(x * step, 0f, 0f));
+                vertices.Add(new Vector3(x * step, data[0, x], 0f));
+            }
+            yield return null;
+
+            // Right
+            for (int z = 0; z < terrainData.heightmapHeight; z++) {
+                vertices.Add(new Vector3(SIZE, 0f, z * step));
+                vertices.Add(new Vector3(SIZE, data[z, terrainData.heightmapWidth - 1], z * step));
+            }
+            yield return null;
+
+            // Back
+            for (int x = 0; x < terrainData.heightmapWidth; x++) {
+                var xr = terrainData.heightmapWidth - 1 - x;
+                vertices.Add(new Vector3(xr * step, 0f, SIZE));
+                vertices.Add(new Vector3(xr * step, data[terrainData.heightmapHeight - 1, xr], SIZE));
+            }
+            yield return null;
+
+            // Left
+            for (int z = 0; z < terrainData.heightmapHeight; z++) {
+                var zr = terrainData.heightmapHeight - 1 - z;
+                vertices.Add(new Vector3(0f, 0f, zr * step));
+                vertices.Add(new Vector3(0f, data[zr, 0], zr * step));
+            }
+            yield return null;
+
+            // Quads
+            for (int i = 0; i < vertices.Count / 2 - 1; i++) {
+                triangles.AddRange(new int[] {
+                    2 * i + 0,
+                    2 * i + 1,
+                    2 * i + 2,
+                    2 * i + 2,
+                    2 * i + 1,
+                    2 * i + 3
+                });
+            }
+
+            // Create single mesh for all four sides
+            GameObject side = new GameObject("side");
+            side.transform.position = position;
+            side.transform.parent = terrainObject.transform;
+            yield return null;
+
+            // Create mesh
+            Mesh mesh = new Mesh() {
+                vertices = vertices.ToArray(),
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            yield return null;
+
+            MeshFilter meshFilter = side.AddComponent<MeshFilter>();
+            meshFilter.mesh = mesh;
+            yield return null;
+
+            MeshRenderer meshRenderer = side.AddComponent<MeshRenderer>();
+            meshRenderer.material = new Material(Shader.Find("Standard")) {
+                color = new Color32(0, 128, 128, 100)
+            };
+            yield return null;
+
+            MeshCollider meshCollider = side.AddComponent<MeshCollider>();
+            yield return null;
+        }
+        private IEnumerator AddStreetAddress(Vector3 position) {
+            // Get UL and LR coordinates
+            var tileUL = this._place.Location.ToTile(this._place.Level);
+            var tileLR = new Tile() {
+                Zoom = tileUL.Zoom,
+                X = tileUL.X + 1,
+                Y = tileUL.Y + 1
+            };
+            var coordUL = tileUL.UpperLeft;
+            var coordLR = tileLR.UpperLeft;
+
+            // Get tapped location relative to lower left.
+            GameObject terrain = GameObject.Find("terrain");
+            var location = position - terrain.transform.position;
+
+            var longitude = coordUL.Longitude + (coordLR.Longitude - coordUL.Longitude) * (location.x / SIZE);
+            var lattitude = coordLR.Latitude + (coordUL.Latitude - coordLR.Latitude) * (location.z / SIZE);
+            var coordinate = new Coordinate() {
+                Longitude = longitude,
+                Latitude = lattitude
+            };
+
+            // Retrieve address.
+            this.StartCoroutine(GeocodeServer.ReverseGeocode(coordinate, address => {
+                // Exit if no address found.
+                if (address == null) {
+                    System.Diagnostics.Debug.WriteLine("No Address");
+                    return;
+                }
+
+                // Create leader line.
+                GameObject line = new GameObject();
+                line.transform.parent = terrain.transform;
+                //line.tag = "Address";
+
+                LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
+                lineRenderer.material = new Material(Shader.Find("Standard")) {
+                    color = Color.white
+                };
+                lineRenderer.SetWidth(0.002f, 0.002f);
+                lineRenderer.SetVertexCount(2);
+                lineRenderer.SetPositions(new Vector3[] {
+                    position,
+                    position + Vector3.up * 0.15f
+                });
+                lineRenderer.receiveShadows = false;
+                lineRenderer.shadowCastingMode = ShadowCastingMode.Off;
+                lineRenderer.useWorldSpace = false;
+
+                // Add text
+                GameObject text = new GameObject();
+                text.transform.parent = terrain.transform;
+                //text.tag = "Address";
+                text.transform.position = position + Vector3.up * 0.15f;
+                text.transform.localScale = new Vector3(0.002f, 0.002f, 1f);
+
+                TextMesh textMesh = text.AddComponent<TextMesh>();
+                textMesh.text = address.SingleLine;
+                textMesh.anchor = TextAnchor.LowerCenter;
+                textMesh.fontSize = 50;
+                textMesh.richText = true;
+                textMesh.color = Color.white;
+
+                Billboard billboard = text.AddComponent<Billboard>();
+                billboard.PivotAxis = PivotAxis.Y;
+            }));
+            yield return null;
         }
     }
 }

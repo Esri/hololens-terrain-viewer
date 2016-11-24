@@ -34,9 +34,12 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
             WWW www = new WWW(url);
             yield return www;
 
-            // Load image as texture and return.
+            // Load image as texture.
             Texture2D texture = new Texture2D(256, 256, TextureFormat.RGB24, false);
             www.LoadImageIntoTexture(texture);
+            yield return null;
+
+            // return.
             callback(texture);
         }
     }

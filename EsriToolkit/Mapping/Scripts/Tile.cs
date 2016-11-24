@@ -15,6 +15,7 @@
 */
 
 using System;
+using UnityEngine;
 
 namespace Esri.PrototypeLab.HoloLens.Unity {
     public class Tile {
@@ -35,6 +36,27 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
                 }
             }
             return tiles;
+        }
+        public Coordinate UpperLeft {
+            get {
+                var n = Mathf.Pow(2, this.Zoom);
+                var lon = this.X / n * 360f - 180f;
+                var lat = Mathf.Atan((float)Math.Sinh(Mathf.PI * (1 - 2 * this.Y / n))) * Mathf.Rad2Deg;
+                return new Coordinate() {
+                    Longitude = lon,
+                    Latitude = lat
+                };
+            }
+        }
+        public float Size {
+            get {
+                const double BASE = 156543.03392800014d;
+                double resolution = BASE;
+                for (int i = 0; i < this.Zoom; i++) {
+                    resolution /= 2;
+                }
+                return Convert.ToSingle(resolution * 256);
+            }
         }
     }
 }

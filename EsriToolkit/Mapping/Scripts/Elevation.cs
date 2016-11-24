@@ -41,6 +41,7 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
                 Debug.Log(string.Format("function lerc_getBlobInfo() failed with error code {0}.", hr));
                 yield break;
             }
+            yield return null;
 
             int version = (int)info[0]; // version
             int type = (int)info[1];    // data type
@@ -63,6 +64,7 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
                 Debug.Log(string.Format("function lerc_decode() failed with error code {0}.", hr2));
                 yield break;
             }
+            yield return null;
 
             float? min = null;
             float? max = null;
@@ -70,9 +72,6 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
                 min = (min.HasValue) ? Math.Min(min.Value, v) : v;
                 max = (max.HasValue) ? Math.Max(max.Value, v) : v;
             }
-
-            //System.Diagnostics.Debug.WriteLine("Esri: min: {0}, max: {1} ", new object[] { min, max });
-            //System.Diagnostics.Debug.WriteLine("Acta: min: {0}, max: {1} ", new object[] { min2, max2 });
 
             callback(new ElevationData() {
                 Columns = cols,

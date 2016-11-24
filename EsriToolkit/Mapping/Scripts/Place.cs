@@ -23,17 +23,17 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
             get {
                 return new Place[] {
                     new Place() {
-                        Name = "grand canyon",
+                        Name = "hoover dam",
                         Location = new Coordinate() {
-                            Longitutude = -114.738206f,
-                            Latitude = 36.015578f
+                            Longitude = -114.737778f,
+                            Latitude = 36.015556f
                         },
-                        Level = 14
+                        Level = 12
                     },
                     new Place() {
                         Name = "mount everest",
                         Location = new Coordinate() {
-                            Longitutude = 86.925278f,
+                            Longitude = 86.925278f,
                             Latitude = 27.988056f
                         },
                         Level = 10
@@ -41,10 +41,58 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
                     new Place() {
                         Name = "mount saint helens",
                         Location = new Coordinate() {
-                            Longitutude = -122.1944f,
+                            Longitude = -122.1944f,
                             Latitude = 46.1912f
                         },
                         Level = 10
+                    },
+                    new Place() {
+                        Name = "paris",
+                        Location = new Coordinate() {
+                            Longitude = 2.3508f,
+                            Latitude = 48.8567f
+                        },
+                        Level = 9
+                    },
+                    new Place() {
+                        Name = "los angeles",
+                        Location = new Coordinate() {
+                            Longitude = -118.25f,
+                            Latitude = 34.05f
+                        },
+                        Level = 9
+                    },
+                    new Place() {
+                        Name = "machu picchu",
+                        Location = new Coordinate() {
+                            Longitude = -72.545556f,
+                            Latitude = -13.163333f
+                        },
+                        Level = 10
+                    },
+                    new Place() {
+                        Name = "mount taranaki",
+                        Location = new Coordinate() {
+                            Longitude = 174.064722f,
+                            Latitude = -39.296389f
+                        },
+                        Level = 11
+                    },
+                    new Place() {
+                        Name = "mount maunganui",
+                        Location = new Coordinate() {
+                            Longitude = 176.185f,
+                            Latitude = -37.643f
+                        },
+                        Level = 12
+                    },
+                    new Place() {
+                        Name = "wellington",
+                        Location = new Coordinate() {
+                            Longitude = 174.777222f,
+                            Latitude = -41.288889f
+                        },
+                        Level = 12
                     }
                 };
             }
