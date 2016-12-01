@@ -17,6 +17,7 @@
 using SimpleJSON;
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Esri.PrototypeLab.HoloLens.Unity {
@@ -48,5 +49,40 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
                 SingleLine = address["Match_addr"].Value
             });
         }
+        //public static IEnumerator ReverseGeocodeRT(Coordinate coordinate, Action<Address> callback) {
+        //    // Create task
+        //    var task = Task.Run(async () => {
+        //        // Perform Esri Runtime reverse geocoding asynchronously.
+        //        LocatorTask locatorTask = new LocatorTask(new Uri(URL));
+        //        await locatorTask.LoadAsync();
+        //        MapPoint point = new MapPoint(
+        //            coordinate.Longitude,
+        //            coordinate.Latitude,
+        //            new SpatialReference(4326)
+        //        );
+        //        ReverseGeocodeParameters parameters = new ReverseGeocodeParameters() {
+        //            MaxResults = 1
+        //        };
+        //        var results = await locatorTask.ReverseGeocodeAsync(point, parameters);
+        //        if (results.Count == 0 || results[0] == null) { return null; }
+        //        return results[0].Attributes;
+        //    });
+
+        //    // Wait for Esri reverse geocoding to complete.
+        //    yield return new WaitUntil(() => task.IsCompleted);
+
+        //    // No address found.
+        //    if (task.Result == null) { yield break; }
+
+        //    // Return address as structured object.
+        //    callback(new Address() {
+        //        Street = task.Result["Address"].ToString(),
+        //        City = task.Result["City"].ToString(),
+        //        Region = task.Result["Region"].ToString(),
+        //        Postal = task.Result["Postal"].ToString(),
+        //        Country = task.Result["CountryCode"].ToString(),
+        //        SingleLine = task.Result["Match_addr"].ToString()
+        //    });
+        //}
     }
 }
