@@ -17,7 +17,7 @@
 using SimpleJSON;
 using System;
 using System.Collections;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Esri.PrototypeLab.HoloLens.Unity {
