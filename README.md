@@ -10,7 +10,7 @@ Instructions how to build, deploy and configure the application are described be
 
 # SETUP 
 
-Firstly it is strong recommended that the reader become familar with the resources available on Microsoft's [Mixed Reality](https://developer.microsoft.com/en-us/windows/mixed-reality) web portal. The site contains a wealth of information about HoloLens hardware, tutorials and forums.
+Firstly it is strong recommended that the reader become familiar with the resources available on Microsoft's [Mixed Reality](https://developer.microsoft.com/en-us/windows/mixed-reality) web portal. The site contains a wealth of information about HoloLens hardware, tutorials and forums.
 
 ## **Installing the Prerequisites**
 
@@ -121,11 +121,11 @@ For detailed instructions on all three of these please visit [Microsoft - Mixed 
 
 As demonstrated in [this video](https://www.youtube.com/watch?v=hE9GXpZTwAs), voice commands are used to navigate to locations around the world.  At each location a terrain map is built and displayed.  These *locations* and *commands* are preset in file called [Place.cs](https://github.com/ArcGIS/Esri-HoloLens-Terrain-Sample/blob/master/Assets/EsriToolkit/Mapping/Scripts/Place.cs).
 
-In the following snippet, the ***Place*** class contains two preset locations, the [Hoover Dam](https://en.wikipedia.org/wiki/Hoover_Dam) and [Mount Everest](https://en.wikipedia.org/wiki/Mount_Everest). A user would view the Hoover Dam by speaking "*show hoover dam*". Ideally, to improve speech recognition reliability, place names should contain mulitiple words and syllables.
+In the following snippet, the ***Place*** class contains two preset locations, the [Hoover Dam](https://en.wikipedia.org/wiki/Hoover_Dam) and [Mount Everest](https://en.wikipedia.org/wiki/Mount_Everest). A user would view the Hoover Dam by speaking "*show hoover dam*". Ideally, to improve speech recognition reliability, place names should contain multiple words and syllables.
 
 The **Level** property denotes the AGOL zoom level. For most locations a zoom level of 9 or 10 is recommended, however due to higher resolution elevation in the United States the zoom level can be as high as 11 or 12.
 
-```java
+```
 namespace Esri.PrototypeLab.HoloLens.Unity {
     public class Place {
         public string Name { get; set; }
