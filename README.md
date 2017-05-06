@@ -158,7 +158,7 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
 
 ```
 
-# MISCELANEOUS TIPS AND TRICKS
+# MISCELLANEOUS TIPS AND TRICKS
 
 1. Newly created Visual Studio Solutions exported from Unity rarely build successfully the first time. Building projects individually on new solutions seems to eliminate initial build errors.
 2. Use [Wikipedia](https://www.wikipedia.org/) to get the location of a well known location in decimal degrees.
