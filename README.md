@@ -160,7 +160,7 @@ namespace Esri.PrototypeLab.HoloLens.Unity {
 
 # MISCELANEOUS TIPS AND TRICKS
 
-1. Newly created Visual Studio Solutions exported from Unity rarely build successfully the first time. Building projects individually on new solutions seems to eliminate intial build errors.
+1. Newly created Visual Studio Solutions exported from Unity rarely build successfully the first time. Building projects individually on new solutions seems to eliminate initial build errors.
 2. Use [Wikipedia](https://www.wikipedia.org/) to get the location of a well known location in decimal degrees.
 3. Don't forget to [pair](https://developer.microsoft.com/en-us/windows/holographic/using_the_windows_device_portal#creating_a_username_and_password) your HoloLens and enable [developer mode](https://developer.microsoft.com/en-us/windows/holographic/using_the_windows_device_portal#setting_up_hololens_to_use_windows_device_portal).
 
