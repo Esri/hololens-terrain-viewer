@@ -1,4 +1,4 @@
-# HOLOLENS TERRAIN SAMPLE
+# HOLOLENS TERRAIN VIEWER
 
 [HoloLens](https://en.wikipedia.org/wiki/Microsoft_HoloLens) is an [mixed reality](https://en.wikipedia.org/wiki/Mixed_reality) visor manufactured by [Microsoft](https://www.microsoft.com/microsoft-hololens/en-us). This github repo contains source code for an experimental HoloLens mapping application developed by [Esri](https://www.esri.com/)'s [Prototype Lab](https://maps.esri.com/demo/).  The code is intended to be used within a Unity project in conjunction with Microsoft Visual Studio for deployment and packaging.  
 
@@ -23,7 +23,7 @@ As discussed [here](https://developer.microsoft.com/en-us/windows/holographic/in
 
 ## **Download the Repo**
 
-Download the [HoloLens Terrain Sample](https://github.com/ArcGIS/Esri-HoloLens-Terrain-Sample) from github as a single zip file as pictured below.
+Download the [HoloLens Terrain Viewer](https://github.com/ArcGIS/HoloLens-Terrain-Viewer) from github as a single zip file as pictured below.
 
 ![](./Readme/github-download.jpg)
 
