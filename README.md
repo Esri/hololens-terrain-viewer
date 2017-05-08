@@ -23,7 +23,7 @@ As discussed [here](https://developer.microsoft.com/en-us/windows/holographic/in
 
 ## **Download the Repo**
 
-Download the [HoloLens Terrain Viewer](https://github.com/ArcGIS/holoLens-terrain-viewer) from github as a single zip file as pictured below.
+Download the [HoloLens Terrain Viewer](https://github.com/esri/holoLens-terrain-viewer) from github as a single zip file as pictured below.
 
 ![](./Readme/github-download.jpg)
 
