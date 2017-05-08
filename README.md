@@ -23,7 +23,7 @@ As discussed [here](https://developer.microsoft.com/en-us/windows/holographic/in
 
 ## **Download the Repo**
 
-Download the [HoloLens Terrain Viewer](https://github.com/ArcGIS/HoloLens-Terrain-Viewer) from github as a single zip file as pictured below.
+Download the [HoloLens Terrain Viewer](https://github.com/ArcGIS/holoLens-terrain-viewer) from github as a single zip file as pictured below.
 
 ![](./Readme/github-download.jpg)
 
@@ -119,7 +119,7 @@ For detailed instructions on all three of these please visit [Microsoft - Mixed 
 
 # CONFIGURATION 
 
-As demonstrated in [this video](https://www.youtube.com/watch?v=hE9GXpZTwAs), voice commands are used to navigate to locations around the world.  At each location a terrain map is built and displayed.  These *locations* and *commands* are preset in file called [Place.cs](https://github.com/ArcGIS/Esri-HoloLens-Terrain-Sample/blob/master/Assets/EsriToolkit/Mapping/Scripts/Place.cs).
+As demonstrated in [this video](https://www.youtube.com/watch?v=hE9GXpZTwAs), voice commands are used to navigate to locations around the world.  At each location a terrain map is built and displayed.  These *locations* and *commands* are preset in file called [Place.cs](./Assets/EsriToolkit/Mapping/Scripts/Place.cs).
 
 In the following snippet, the ***Place*** class contains two preset locations, the [Hoover Dam](https://en.wikipedia.org/wiki/Hoover_Dam) and [Mount Everest](https://en.wikipedia.org/wiki/Mount_Everest). A user would view the Hoover Dam by speaking "*show hoover dam*". Ideally, to improve speech recognition reliability, place names should contain multiple words and syllables.
 
